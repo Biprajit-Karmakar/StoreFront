@@ -1,4 +1,5 @@
 from django.db import models
+import uuid
 from django.core.validators import MinValueValidator
 # Create your models here.
 
@@ -20,7 +21,6 @@ class Collection(models.Model):
         ordering = ['title']
     
 class Product(models.Model):
-    sku = models.CharField(max_length=10, primary_key=True)
     title = models.CharField(max_length=255, unique=True)
     slug = models.SlugField(max_length=255, unique=True)
     description = models.TextField()
@@ -31,7 +31,7 @@ class Product(models.Model):
         )
     inventory = models.IntegerField()
     last_update = models.DateTimeField(auto_now=True)
-    Collection = models.ForeignKey(Collection, on_delete=models.PROTECT,null= True, default=None)
+    Collection = models.ForeignKey(Collection, on_delete=models.PROTECT,null= True, default=None, related_name='products')
     promotions = models.ManyToManyField(Promotion, blank=True)
     
     def __str__(self):
@@ -51,7 +51,7 @@ class Customer(models.Model):
         (MEMBERSHIP_SILVER, 'Silver'),
         (MEMBERSHIP_GOLD, 'Gold'),
     ]
-
+    id = models.IntegerField(primary_key= True)
     first_name = models.CharField(max_length=255)
     last_name = models.CharField(max_length=255)
     email = models.EmailField()
@@ -79,7 +79,7 @@ class Order(models.Model):
 
 class OrderItem(models.Model):
     order = models.ForeignKey(Order, on_delete=models.PROTECT)
-    product = models.ForeignKey(Product, on_delete=models.PROTECT)
+    product = models.ForeignKey(Product, on_delete=models.PROTECT, related_name='orderitems')
     extra = 0 
     quantitiy = models.PositiveSmallIntegerField()
     unit_price = models.DecimalField(max_digits=6, decimal_places=2)

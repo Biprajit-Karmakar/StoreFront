@@ -47,7 +47,7 @@ class TagInline(GenericTabularInline):
     model = TaggedItem
 
 @admin.register(Product)
-class ProductAdmin(admin.ModelAdmin):
+class ProductAdmin(ImportExportModelAdmin):
     autocomplete_fields = ['Collection']
     prepopulated_fields = {'slug': ('title', ) }
     actions = ['clear_inventory']
@@ -73,7 +73,7 @@ class ProductAdmin(admin.ModelAdmin):
         )
 
 @admin.register(Collection)
-class CollectionAdmin(admin.ModelAdmin):
+class CollectionAdmin(ImportExportModelAdmin):
     list_display = ['title', 'products_count']
     search_fields =['title']
     
@@ -86,7 +86,7 @@ class CollectionAdmin(admin.ModelAdmin):
     
     def get_queryset(self, request):
         return super().get_queryset(request).annotate(
-            products_count = Count('product')
+            products_count = Count('products')
         )
 
 class OrderItemInline(admin.TabularInline):
