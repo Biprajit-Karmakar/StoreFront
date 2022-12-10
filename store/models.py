@@ -1,5 +1,4 @@
 from django.db import models
-import uuid
 from django.core.validators import MinValueValidator
 # Create your models here.
 
@@ -40,6 +39,12 @@ class Product(models.Model):
     
     class Meta:
         ordering = ['title']
+
+class Review(models.Model):
+    product = models.ForeignKey(Product, related_name='reviews', on_delete=models.CASCADE)
+    name = models.CharField(max_length=255)
+    description = models.TextField()
+    date = models.DateField(auto_now_add=True)
 
 class Customer(models.Model):    
     MEMBERSHIP_BRONZE = 'B'
